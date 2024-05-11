@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speedtest-exporter
+  namespace: monitoring
+  labels:
+    app: speedtest-exporter
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port: '9798'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: speedtest-exporter
+  template:
+    metadata:
+      labels:
+        app: speedtest-exporter
+    spec:
+      containers:
+      - name: speedtest-exporter
+        image: ghcr.io/miguelndecarvalho/speedtest-exporter
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9798
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "256Mi"

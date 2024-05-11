@@ -1,0 +1,43 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: prometheus
+      version: "25.17.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    extraScrapeConfigs: |
+      - job_name: 'blackbox'
+        scrape_interval: 5m
+        metrics_path: /probe
+        params:
+          module: [http_2xx]
+        static_configs:
+          - targets:
+            - https://blog.solgard.solutions
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: 'blackbox-exporter.monitoring:9115'
+      - job_name: 'speedtest-exporter'
+        scrape_interval: 30m
+        scrape_timeout: 60s
+        static_configs:
+          - targets: 
+            - speedtest-exporter.monitoring:9798
+      - job_name: 'kepler-exporter'
+        scrape_interval: 5m
+        static_configs:
+          - targets: 
+            - kepler.monitoring:9102

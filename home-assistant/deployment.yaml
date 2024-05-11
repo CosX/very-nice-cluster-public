@@ -1,0 +1,85 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: verynice102c
+      containers:
+      - name: home-assistant-app
+        image: "ghcr.io/home-assistant/home-assistant:2024.3.1"
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: home-assistant-config
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["CAP_SYS_RAWIO"]
+        ports:
+          - name: http
+            containerPort: 8123
+            protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
+        volumeMounts:
+          - name: config
+            mountPath: /config/configuration.yaml
+            subPath: configuration.yaml
+          - name: ha-config-root
+            mountPath: /config
+          - name: zigbee-dongle
+            mountPath: /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20231101083603-if00
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+      restartPolicy: Always
+      volumes:
+        - name: config
+          configMap:
+            name: home-assistant-config
+        - name: ha-config-root
+          persistentVolumeClaim:
+            claimName: home-assistant-config-root
+        - name: zigbee-dongle
+          hostPath:
+            path: /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20231101083603-if00
+        
