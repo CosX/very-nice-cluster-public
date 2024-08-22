@@ -23,6 +23,3 @@ Before setting up the cluster, ensure the following:
 - **Helm Installed**: [Helm](https://helm.sh/) is used to manage Kubernetes applications.
 - **GitOps Setup**: Using [Flux](https://fluxcd.io/) for GitOps is recommended but optional.
 - **NFS Server**: An existing NFS server setup if using NFS for persistent volumes.
-
-## Resources
-
