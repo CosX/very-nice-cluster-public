@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: kepler
+  name: csi-driver-nfs
   namespace: flux-system
 spec:
   interval: 5m
-  url: https://sustainable-computing-io.github.io/kepler-helm-chart
+  url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts

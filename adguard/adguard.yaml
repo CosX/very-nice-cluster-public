@@ -57,7 +57,7 @@ metadata:
 spec:
   capacity:
     storage: 1Gi
-  storageClassName: "local-path"
+  storageClassName: "nfs-csi"
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -75,7 +75,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: "local-path"
+  storageClassName: "nfs-csi"
   volumeName: adguard-pv
 ---
 apiVersion: v1
@@ -100,4 +100,4 @@ spec:
       targetPort: 53
       name: dns
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.11
+  loadBalancerIP: <your-loadbalancer-ip>

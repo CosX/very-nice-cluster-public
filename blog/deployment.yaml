@@ -15,10 +15,10 @@ spec:
         app: karl-blog
     spec:
       imagePullSecrets:
-      - name: ghcr-login-secret
+      - name: <your-registry-secret>
       containers:
       - name: karl-blog-container
-        image: ghcr.io/cosx/blog:latest
+        image: <your-registry>/blog:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80

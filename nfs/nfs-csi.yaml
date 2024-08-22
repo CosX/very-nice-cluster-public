@@ -1,0 +1,46 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: <your-nfs-server-ip>
+  share: /k8s
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4
+  - hard
+  - timeo=600
+  - retrans=3
+  - proto=tcp
+  - rsize=32768
+  - wsize=32768
+  - noacl
+  - nocto
+  - noatime
+  - nodiratime
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi-db
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: <your-nfs-server-ip>
+  share: /db
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4
+  - rw
+  - noatime
+  - nodiratime
+  - rsize=32768
+  - wsize=32768
+  - hard
+  - intr
+  - timeo=600
+  - retrans=2
